@@ -1,0 +1,12 @@
+# Auto-debug / LLM artifacts
+auto_debug_report.json
+llm_prompt.txt
+llm_response.txt
+llm_suggestion.json
+llm_suggestion.patch
+
+# Node / python envs
+node_modules/
+__pycache__/
+*.pyc
+.venv/

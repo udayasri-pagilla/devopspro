@@ -1,0 +1,13 @@
+{
+  "name": "ci-cd-llm-auto-debugging",
+  "version": "1.0.0",
+  "description": "Small project used by the CI/CD auto-debugging demo",
+  "main": "src/add.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {}
+}
