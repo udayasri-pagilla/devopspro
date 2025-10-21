@@ -43,6 +43,7 @@ jobs:
           path: llm_prompt.txt
       - name: Send prompt to OpenAI (optional)
         if: ${{ env.OPENAI_API_KEY != '' }}
+        continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
