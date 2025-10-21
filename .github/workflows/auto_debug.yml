@@ -9,6 +9,8 @@ on:
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js
@@ -40,7 +42,7 @@ jobs:
           name: llm_prompt
           path: llm_prompt.txt
       - name: Send prompt to OpenAI (optional)
-        if: secrets.OPENAI_API_KEY != ''
+        if: ${{ env.OPENAI_API_KEY != '' }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
@@ -54,7 +56,7 @@ jobs:
           name: llm_response
           path: llm_response.txt
       - name: Post LLM suggestion as PR comment (optional)
-        if: github.event_name == 'pull_request' && secrets.OPENAI_API_KEY != ''
+        if: ${{ github.event_name == 'pull_request' && env.OPENAI_API_KEY != '' }}
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
