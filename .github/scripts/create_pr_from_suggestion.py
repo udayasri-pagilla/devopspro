@@ -137,7 +137,58 @@ def main():
         print("Created PR:", pr.get("html_url"))
         return 0
 
-    print("No suggestion patch or JSON found; nothing to do.")
+    # If no suggestion exists, create a diagnostics PR using auto_debug_report.json
+    report_path = repo_root / "auto_debug_report.json"
+    if report_path.exists():
+        branch = f"ci-report/{sha}"
+        try:
+            run(["git", "checkout", "-b", branch])
+        except subprocess.CalledProcessError:
+            run(["git", "checkout", branch])
+
+        # add the report file to a known folder so the PR contains the diagnostics
+        out_dir = repo_root / ".github" / "ci-reports"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        dest = out_dir / f"auto_debug_report_{sha}.json"
+        try:
+            dest.write_text(report_path.read_text(encoding="utf-8"), encoding="utf-8")
+        except Exception as e:
+            print("Failed to copy report file:", e)
+
+        run(["git", "add", str(dest)])
+        run(["git", "commit", "-m", "chore: add CI auto-debug report"]) 
+        push_branch(branch)
+
+        # Build PR body summarizing test result if available
+        try:
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            npm_test = report.get("npm_test")
+            if isinstance(npm_test, dict):
+                rc = npm_test.get("returncode")
+                if rc == 0:
+                    title = f"CI report: tests passed ({sha})"
+                    body = "Automated CI report: tests passed. See attached auto-debug report for details."
+                else:
+                    title = f"CI report: tests failed ({sha})"
+                    stdout = npm_test.get("stdout", "") or ""
+                    stderr = npm_test.get("stderr", "") or ""
+                    body = (
+                        "Automated CI report: tests failed.\n\n"
+                        "Attached auto-debug report contains stdout/stderr and files present.\n\n"
+                        "```\n" + stdout + "\n\n" + stderr + "\n```"
+                    )
+            else:
+                title = f"CI report: diagnostics ({sha})"
+                body = "Automated CI diagnostics. See attached auto-debug report."
+        except Exception:
+            title = f"CI report: diagnostics ({sha})"
+            body = "Automated CI diagnostics. See attached auto-debug report."
+
+        pr = create_pr(title, body, branch, base_branch, token, repo)
+        print("Created PR:", pr.get("html_url"))
+        return 0
+
+    print("No suggestion patch, JSON, or auto_debug_report found; nothing to do.")
     return 0
 
 

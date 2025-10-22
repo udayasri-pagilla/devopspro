@@ -1,10 +1,8 @@
 name: Auto Debug CI
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  push: {}
+  pull_request: {}
 
 jobs:
   lint-and-test:
