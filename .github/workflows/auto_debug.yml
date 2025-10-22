@@ -1,5 +1,9 @@
 name: Auto Debug CI
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   push: {}
   pull_request: {}
@@ -96,9 +100,17 @@ jobs:
 
       - name: Create PR from LLM suggestion or CI report
         if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+        continue-on-error: true
         run: |
-          python .github/scripts/create_pr_from_suggestion.py
+          python .github/scripts/create_pr_from_suggestion.py > pr_creator.log 2>&1 || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           BASE_BRANCH: main
+
+      - name: Upload PR creator log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr_creator_log
+          path: pr_creator.log
