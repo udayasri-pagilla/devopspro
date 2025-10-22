@@ -55,3 +55,5 @@ git apply --stat llm_suggestion.patch
 ```
 
 The workflow will upload these files as artifacts and include the suggested patch in the PR comment when present.
+
+<!-- PR test: tiny edit to create a visible change for the CI PR -->
