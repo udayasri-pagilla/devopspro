@@ -1,0 +1,19 @@
+{
+  "python_executable": "/opt/hostedtoolcache/Python/3.11.13/x64/bin/python",
+  "cwd": "/home/runner/work/devopspro/devopspro",
+  "repo_root": "/home/runner/work/devopspro/devopspro",
+  "files_present": [
+    {
+      "path": "/home/runner/work/devopspro/devopspro/ci-cd-llm-auto-debugging/package.json",
+      "exists": true
+    },
+    {
+      "path": "/home/runner/work/devopspro/devopspro/ci-cd-llm-auto-debugging/src/add.js",
+      "exists": true
+    },
+    {
+      "path": "/home/runner/work/devopspro/devopspro/ci-cd-llm-auto-debugging/test/add.test.js",
+      "exists": true
+    }
+  ]
+}
