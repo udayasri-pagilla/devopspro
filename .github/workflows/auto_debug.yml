@@ -90,3 +90,17 @@ jobs:
             } catch (err) {
               console.log('Failed to post LLM comment:', err && err.message ? err.message : err);
             }
+
+      - name: Create PR from LLM suggestion (optional)
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+        run: |
+          # run PR creation only if a suggestion patch or JSON exists
+          if [ -f llm_suggestion.patch ] || [ -f llm_suggestion.json ]; then
+            python .github/scripts/create_pr_from_suggestion.py
+          else
+            echo "No suggestion files found; skipping PR creation."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          BASE_BRANCH: main
